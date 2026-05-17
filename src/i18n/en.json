@@ -33,11 +33,11 @@
     "delete": "Delete"
   },
   "taskForm": {
-    "addHeading": "Add Task",
+    "addHeading": "New Task",
     "editHeading": "Edit Task",
     "cancel": "Cancel",
-    "saveChanges": "Save changes",
-    "addTaskBtn": "Add task",
+    "saveChanges": "Save Changes",
+    "createTask": "Create Task",
     "fields": {
       "title": "Title",
       "description": "Description",
@@ -49,20 +49,20 @@
       "tags": "Tags"
     },
     "placeholders": {
-      "title": "Task title",
-      "description": "Optional description",
+      "title": "What needs to be done?",
+      "description": "Add more context…",
       "tags": "bug, feature, ux"
     },
     "hints": {
-      "optional": "optional",
       "commaSeparated": "comma-separated"
     },
     "validation": {
-      "titleRequired": "Title is required",
-      "titleMin": "At least 3 characters",
-      "titleMax": "Max 120 characters",
-      "titleNoWhitespace": "Cannot be blank or whitespace only",
-      "descriptionMax": "Max 500 characters"
+      "titleRequired": "Title is required.",
+      "titleMin": "Title must be at least 3 characters.",
+      "titleMax": "Title cannot exceed 120 characters.",
+      "titleNoWhitespace": "Title is required.",
+      "descriptionMax": "Description cannot exceed 500 characters.",
+      "invalidDate": "Please enter a valid date."
     }
   }
 }

@@ -23,8 +23,20 @@ interface FormValues {
   tags: string;
 }
 
+// Mirrors Angular noWhitespaceValidator — only fires on non-empty whitespace-only strings
 function noWhitespace(value: string) {
-  return value.trim().length > 0 || t.taskForm.validation.titleNoWhitespace;
+  if (value.length > 0 && value.trim().length === 0) {
+    return t.taskForm.validation.titleNoWhitespace;
+  }
+  return true;
+}
+
+// Mirrors Angular futureDateValidator
+function validDate(value: string) {
+  if (!value) return true;
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return t.taskForm.validation.invalidDate;
+  return true;
 }
 
 export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
@@ -86,19 +98,21 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
           <h2 className={styles.modalTitle}>
             {task ? t.taskForm.editHeading : t.taskForm.addHeading}
           </h2>
-          <button className={styles.closeBtn} type="button" onClick={onCancel}>✕</button>
+          <button className={styles.closeBtn} type="button" onClick={onCancel} aria-label="Close">✕</button>
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className={styles.modalBody}>
+        <form className={styles.modalBody} onSubmit={handleSubmit(onSubmit)} noValidate>
 
             {/* Title */}
             <div className={clsx(styles.field, errors.title && styles.fieldError)}>
-              <label className={styles.label}>
+              <label className={styles.label} htmlFor="title">
                 {t.taskForm.fields.title} <span className={styles.required}>*</span>
               </label>
               <input
+                id="title"
                 className={styles.input}
+                type="text"
+                autoComplete="off"
                 placeholder={t.taskForm.placeholders.title}
                 {...register('title', {
                   required:  t.taskForm.validation.titleRequired,
@@ -112,10 +126,14 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
 
             {/* Description */}
             <div className={clsx(styles.field, errors.description && styles.fieldError)}>
-              <label className={styles.label}>{t.taskForm.fields.description}</label>
+              <label className={styles.label} htmlFor="description">
+                {t.taskForm.fields.description}
+              </label>
               <textarea
+                id="description"
                 className={clsx(styles.input, styles.textarea)}
                 placeholder={t.taskForm.placeholders.description}
+                rows={3}
                 {...register('description', {
                   maxLength: { value: 500, message: t.taskForm.validation.descriptionMax },
                 })}
@@ -126,8 +144,8 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
             {/* Status + Priority */}
             <div className={styles.fieldRow}>
               <div className={styles.field}>
-                <label className={styles.label}>{t.taskForm.fields.status}</label>
-                <select className={styles.input} {...register('status')}>
+                <label className={styles.label} htmlFor="status">{t.taskForm.fields.status}</label>
+                <select id="status" className={styles.input} {...register('status')}>
                   <option value="todo">{t.status.todo}</option>
                   <option value="in-progress">{t.status.inProgress}</option>
                   <option value="review">{t.status.review}</option>
@@ -135,8 +153,8 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
                 </select>
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>{t.taskForm.fields.priority}</label>
-                <select className={styles.input} {...register('priority')}>
+                <label className={styles.label} htmlFor="priority">{t.taskForm.fields.priority}</label>
+                <select id="priority" className={styles.input} {...register('priority')}>
                   <option value="low">{t.priority.low}</option>
                   <option value="medium">{t.priority.medium}</option>
                   <option value="high">{t.priority.high}</option>
@@ -148,51 +166,53 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
             {/* Assignee + Project */}
             <div className={styles.fieldRow}>
               <div className={styles.field}>
-                <label className={styles.label}>{t.taskForm.fields.assignee}</label>
-                <select className={styles.input} {...register('assignee')}>
+                <label className={styles.label} htmlFor="assignee">{t.taskForm.fields.assignee}</label>
+                <select id="assignee" className={styles.input} {...register('assignee')}>
                   {ASSIGNEES.map(a => <option key={a} value={a}>{a}</option>)}
                 </select>
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>{t.taskForm.fields.project}</label>
-                <select className={styles.input} {...register('projectId')}>
+                <label className={styles.label} htmlFor="projectId">{t.taskForm.fields.project}</label>
+                <select id="projectId" className={styles.input} {...register('projectId')}>
                   {PROJECTS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
               </div>
             </div>
 
-            {/* Due date */}
-            <div className={styles.field}>
-              <label className={styles.label}>
-                {t.taskForm.fields.dueDate}{' '}
-                <span className={styles.hint}>({t.taskForm.hints.optional})</span>
-              </label>
-              <input type="date" className={styles.input} {...register('dueDate')} />
+            {/* Due Date */}
+            <div className={clsx(styles.field, errors.dueDate && styles.fieldError)}>
+              <label className={styles.label} htmlFor="dueDate">{t.taskForm.fields.dueDate}</label>
+              <input
+                id="dueDate"
+                type="date"
+                className={styles.input}
+                {...register('dueDate', { validate: validDate })}
+              />
+              {errors.dueDate && <p className={styles.errorMsg}>{errors.dueDate.message}</p>}
             </div>
 
             {/* Tags */}
             <div className={styles.field}>
-              <label className={styles.label}>
-                {t.taskForm.fields.tags}{' '}
-                <span className={styles.hint}>({t.taskForm.hints.commaSeparated})</span>
+              <label className={styles.label} htmlFor="tags">
+                {t.taskForm.fields.tags} <span className={styles.hint}>({t.taskForm.hints.commaSeparated})</span>
               </label>
               <input
+                id="tags"
                 className={styles.input}
+                type="text"
                 placeholder={t.taskForm.placeholders.tags}
                 {...register('tags')}
               />
             </div>
 
-          </div>
-
-          <div className={styles.modalFooter}>
+          <footer className={styles.modalFooter}>
             <button type="button" className={styles.btnCancel} onClick={onCancel}>
               {t.taskForm.cancel}
             </button>
             <button type="submit" className={styles.btnSubmit} disabled={isSubmitting}>
-              {task ? t.taskForm.saveChanges : t.taskForm.addTaskBtn}
+              {task ? t.taskForm.saveChanges : t.taskForm.createTask}
             </button>
-          </div>
+          </footer>
         </form>
 
       </div>

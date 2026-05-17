@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import {
   DndContext,
+  DragOverlay,
   PointerSensor,
   useSensor,
   useSensors,
   closestCenter,
 } from '@dnd-kit/core';
-import type { DragEndEvent, DragOverEvent } from '@dnd-kit/core';
+import type { DragStartEvent, DragEndEvent, DragOverEvent } from '@dnd-kit/core';
 import type { Task, TaskStatus } from '../../models/task.model';
 import { COLUMN_ORDER, COLUMN_LABELS } from '../../models/task.model';
 import { useFilteredTasksByStatus, useTaskActions, useTaskStore } from '../../hooks/useTaskStore';
 import { KanbanColumn } from '../../components/KanbanColumn/KanbanColumn';
+import { TaskCardOverlay } from '../../components/TaskCard/TaskCard';
 import { TaskForm } from '../../components/TaskForm/TaskForm';
 import styles from './BoardPage.module.scss';
 
@@ -19,6 +21,7 @@ export function BoardPage() {
   const [filterPriority, setFilterPriority] = useState('');
   const [showForm, setShowForm]             = useState(false);
   const [editingTask, setEditingTask]       = useState<Task | null>(null);
+  const [activeTask, setActiveTask]         = useState<Task | null>(null);
 
   const tasksByStatus = useFilteredTasksByStatus(searchQuery, filterPriority);
   const { addTask, updateTask, deleteTask, moveTask, reorderInColumn } = useTaskActions();
@@ -27,8 +30,13 @@ export function BoardPage() {
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
 
-  // Cross-column: fires while hovering — moves task to new column immediately for live feedback.
-  // Uses getState() so the read is always fresh (avoids stale closure).
+  // Track which task is being dragged so DragOverlay can render a floating copy
+  function handleDragStart(event: DragStartEvent) {
+    const task = useTaskStore.getState().tasks.find(t => t.id === String(event.active.id));
+    setActiveTask(task ?? null);
+  }
+
+  // Cross-column move — fires while hovering over a different column
   function handleDragOver(event: DragOverEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
@@ -46,8 +54,10 @@ export function BoardPage() {
     }
   }
 
-  // Same-column reorder: fires on drop — cross-column was already handled in onDragOver.
+  // Same-column reorder — fires on drop (cross-column already handled in onDragOver)
   function handleDragEnd(event: DragEndEvent) {
+    setActiveTask(null);
+
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
@@ -112,6 +122,7 @@ export function BoardPage() {
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
+        onDragStart={handleDragStart}
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
@@ -127,6 +138,11 @@ export function BoardPage() {
             />
           ))}
         </div>
+
+        {/* Floating card that follows the mouse — mirrors Angular .cdk-drag-preview */}
+        <DragOverlay dropAnimation={{ duration: 200, easing: 'cubic-bezier(0, 0, 0.2, 1)' }}>
+          {activeTask && <TaskCardOverlay task={activeTask} />}
+        </DragOverlay>
       </DndContext>
 
       {showForm && (

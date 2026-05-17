@@ -8,7 +8,9 @@
   padding: 0.75rem;
   cursor: grab;
   position: relative;
-  transition: box-shadow v.$transition-fast, border-color v.$transition-fast;
+  // transform included so displaced cards animate smoothly (mirrors .cdk-drag-animating)
+  transition: box-shadow v.$transition-fast, border-color v.$transition-fast,
+              transform 250ms cubic-bezier(0, 0, 0.2, 1);
 
   &:hover {
     border-color: v.$color-border-hover;
@@ -22,6 +24,21 @@
 // Top-level so CSS Modules exports them as standalone class names
 .done    { opacity: 0.6; }
 .overdue { border-left: 3px solid v.$color-overdue; }
+
+// While dragging: card becomes invisible — DragOverlay shows the floating copy
+.dragging {
+  opacity: 0;
+  transition: none;  // no transform transition on the ghost
+}
+
+// Floating copy rendered in DragOverlay (mirrors Angular .cdk-drag-preview)
+.overlay {
+  opacity: 0.95;
+  border-color: v.$color-primary;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+  cursor: grabbing;
+  transition: none;
+}
 
 .dragHandle {
   position: absolute;

@@ -13,6 +13,8 @@ interface TaskCardProps {
   onDelete: (task: Task) => void;
 }
 
+// ─── Shared visual sub-components ────────────────────────────────────────────
+
 function DueDate({ date, isDone }: { date: Date; isDone: boolean }) {
   const label = useTimeAgo(date);
   const isOverdue = !isDone && date < new Date();
@@ -23,33 +25,15 @@ function DueDate({ date, isDone }: { date: Date; isDone: boolean }) {
   );
 }
 
-export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
-    useSortable({ id: task.id });
-
+// Inner content — no dnd-kit hooks, safe to render inside DragOverlay
+function TaskCardInner({ task, onEdit, onDelete }: TaskCardProps) {
   const project = PROJECTS.find(p => p.id === task.projectId);
-  const isOverdue = !!task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
-  const isDone = task.status === 'done';
-
-  const cardStyle = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    // Only set opacity inline while dragging — otherwise let .done CSS class control it
-    opacity: isDragging ? 0.4 : undefined,
-  };
+  const isDone  = task.status === 'done';
 
   return (
-    <div
-      ref={setNodeRef}
-      style={cardStyle}
-      className={clsx(styles.card, isDone && styles.done, isOverdue && styles.overdue)}
-      {...attributes}
-      {...listeners}
-    >
-      {/* Drag handle — visual indicator only, listeners are on the whole card */}
+    <>
       <span className={styles.dragHandle} aria-hidden>⠿</span>
 
-      {/* Top meta: priority badge + project tag */}
       <div className={styles.metaTop}>
         <span className={clsx(styles.priorityBadge, styles[`p_${task.priority}`])}>
           {task.priority}
@@ -61,41 +45,64 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
         )}
       </div>
 
-      {/* Title — navigates to task detail */}
       <Link to={`/tasks/${task.id}`} className={styles.title}>
         {task.title}
       </Link>
 
-      {/* Footer: assignee + due date + actions */}
       <div className={styles.footer}>
         <span className={styles.assignee}>{task.assignee}</span>
         {task.dueDate && <DueDate date={task.dueDate} isDone={isDone} />}
         <div className={styles.actions}>
-          <button
-            className={styles.iconBtn}
-            onClick={() => onEdit(task)}
-            title="Edit"
-          >
-            ✎
-          </button>
-          <button
-            className={clsx(styles.iconBtn, styles.danger)}
-            onClick={() => onDelete(task)}
-            title="Delete"
-          >
-            ✕
-          </button>
+          <button className={styles.iconBtn}  onClick={() => onEdit(task)}   title="Edit">✎</button>
+          <button className={clsx(styles.iconBtn, styles.danger)} onClick={() => onDelete(task)} title="Delete">✕</button>
         </div>
       </div>
 
-      {/* Tags */}
       {task.tags.length > 0 && (
         <div className={styles.tags}>
-          {task.tags.map(tag => (
-            <span key={tag} className={styles.tag}>{tag}</span>
-          ))}
+          {task.tags.map(tag => <span key={tag} className={styles.tag}>{tag}</span>)}
         </div>
       )}
+    </>
+  );
+}
+
+// ─── Sortable card (used inside KanbanColumn) ─────────────────────────────────
+
+export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: task.id });
+
+  const isOverdue = !!task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
+  const isDone    = task.status === 'done';
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={{ transform: CSS.Transform.toString(transform), transition }}
+      className={clsx(
+        styles.card,
+        isDone      && styles.done,
+        isOverdue   && styles.overdue,
+        isDragging  && styles.dragging,   // invisible — DragOverlay shows the floating copy
+      )}
+      {...attributes}
+      {...listeners}
+    >
+      <TaskCardInner task={task} onEdit={onEdit} onDelete={onDelete} />
+    </div>
+  );
+}
+
+// ─── Overlay card (rendered inside DragOverlay, no dnd-kit hooks) ─────────────
+
+export function TaskCardOverlay({ task }: { task: Task }) {
+  const isOverdue = !!task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'done';
+  const isDone    = task.status === 'done';
+
+  return (
+    <div className={clsx(styles.card, styles.overlay, isDone && styles.done, isOverdue && styles.overdue)}>
+      <TaskCardInner task={task} onEdit={() => {}} onDelete={() => {}} />
     </div>
   );
 }

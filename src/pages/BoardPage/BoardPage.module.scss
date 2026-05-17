@@ -1,36 +1,71 @@
 @use 'variables' as v;
+@use 'mixins' as m;
 
 .page {
-  padding: 1.5rem 2rem;
-  height: 100%;
+  padding: 1.5rem;
+  height: calc(100vh - v.$navbar-height);
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  overflow: hidden;
 }
 
 .header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+  flex-shrink: 0;
 }
 
-.filters {
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: v.$color-text-heading;
+  margin: 0 0 0.25rem;
+}
+
+.sub {
+  font-size: 0.875rem;
+  color: v.$color-text-faint;
+  margin: 0;
+}
+
+.actions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
 }
 
-.searchInput,
-.prioritySelect {
-  // TODO: port from board.component.css
+.searchInput {
+  @include m.input-base;
+  width: 200px;
+}
+
+.filterSelect {
+  @include m.input-base;
+  width: auto;
+  cursor: pointer;
+}
+
+.btnAdd {
+  padding: 0.4rem 1rem;
+  background: v.$color-primary;
+  color: white;
+  border: none;
+  border-radius: v.$radius-md;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background v.$transition-fast;
+  white-space: nowrap;
+
+  &:hover { background: v.$color-primary-hover; }
 }
 
 .board {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1rem;
+  gap: 0.75rem;
   flex: 1;
   overflow: hidden;
 }

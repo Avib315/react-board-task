@@ -18,11 +18,8 @@
   align-items: center;
   gap: 0.5rem;
   flex-shrink: 0;
-}
-
-.brandIcon {
+  // SVG inherits this color for all four rect fills
   color: v.$color-primary;
-  font-size: 1rem;
 }
 
 .brandName {
@@ -43,6 +40,7 @@
 .link {
   display: flex;
   align-items: center;
+  gap: 0.4rem;
   padding: 0.4rem 0.75rem;
   border-radius: 6px;
   color: v.$color-text-muted;
@@ -60,6 +58,16 @@
     background: v.$color-surface;
     color: v.$color-primary;
   }
+}
+
+.badge {
+  background: v.$color-primary;
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 1px 6px;
+  border-radius: v.$radius-pill;
+  line-height: 1.4;
 }
 
 .right {

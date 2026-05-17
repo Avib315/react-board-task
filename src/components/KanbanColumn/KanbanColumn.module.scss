@@ -1,17 +1,69 @@
 @use 'variables' as v;
 
 .column {
-  // TODO: port from board.component.css .column
+  display: flex;
+  flex-direction: column;
+  background: v.$color-bg;
+  border-radius: v.$radius-xl;
+  border: 1px solid v.$color-border-subtle;
+  overflow: hidden;
 }
 
 .header {
-  // TODO
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid transparent;
+  flex-shrink: 0;
+}
+
+// Column accent colours — mirrors .col-todo / .col-inprogress etc.
+.accentTodo       .header { border-color: v.$color-status-todo; }
+.accentInProgress .header { border-color: v.$color-status-in-progress; }
+.accentReview     .header { border-color: v.$color-status-review; }
+.accentDone       .header { border-color: v.$color-status-done; }
+
+// Self-referencing for the column root class
+&.accentTodo       { .header { border-color: v.$color-status-todo; } }
+&.accentInProgress { .header { border-color: v.$color-status-in-progress; } }
+&.accentReview     { .header { border-color: v.$color-status-review; } }
+&.accentDone       { .header { border-color: v.$color-status-done; } }
+
+.title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: v.$color-text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .count {
-  // TODO
+  font-size: 0.7rem;
+  font-weight: 700;
+  background: v.$color-surface;
+  color: v.$color-text-faint;
+  padding: 2px 7px;
+  border-radius: v.$radius-pill;
 }
 
 .taskList {
-  // TODO
+  flex: 1;
+  padding: 0.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 80px;
+  transition: background v.$transition-fast;
+
+  &.isOver { background: rgba(99, 102, 241, 0.06); }
+}
+
+.empty {
+  text-align: center;
+  font-size: 0.75rem;
+  color: v.$color-border;
+  padding: 1.5rem 0;
+  margin: 0;
 }

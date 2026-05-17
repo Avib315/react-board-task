@@ -43,11 +43,10 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
       style={cardStyle}
       className={clsx(styles.card, isDone && styles.done, isOverdue && styles.overdue)}
       {...attributes}
+      {...listeners}
     >
-      {/* Drag handle — visible on hover */}
-      <span className={styles.dragHandle} {...listeners} title="Drag">
-        ⠿
-      </span>
+      {/* Drag handle — visual indicator only, listeners are on the whole card */}
+      <span className={styles.dragHandle} aria-hidden>⠿</span>
 
       {/* Top meta: priority badge + project tag */}
       <div className={styles.metaTop}>

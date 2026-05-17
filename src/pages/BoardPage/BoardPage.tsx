@@ -21,40 +21,44 @@ export function BoardPage() {
   const [editingTask, setEditingTask]       = useState<Task | null>(null);
 
   const tasksByStatus = useFilteredTasksByStatus(searchQuery, filterPriority);
-  const allTasks      = useTaskStore(s => s.tasks);
   const { addTask, updateTask, deleteTask, moveTask, reorderInColumn } = useTaskActions();
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   );
 
+  // Cross-column: fires while hovering — moves task to new column immediately for live feedback.
+  // Uses getState() so the read is always fresh (avoids stale closure).
   function handleDragOver(event: DragOverEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const activeTask = allTasks.find(t => t.id === active.id);
-    const overIsColumn = COLUMN_ORDER.includes(over.id as TaskStatus);
-    const targetStatus = overIsColumn
-      ? (over.id as TaskStatus)
-      : allTasks.find(t => t.id === over.id)?.status;
+    const tasks      = useTaskStore.getState().tasks;
+    const activeTask = tasks.find(t => t.id === String(active.id));
+    const overId     = String(over.id);
+
+    const targetStatus = COLUMN_ORDER.includes(overId as TaskStatus)
+      ? (overId as TaskStatus)
+      : tasks.find(t => t.id === overId)?.status;
 
     if (activeTask && targetStatus && activeTask.status !== targetStatus) {
       moveTask(String(active.id), targetStatus);
     }
   }
 
+  // Same-column reorder: fires on drop — cross-column was already handled in onDragOver.
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
     if (!over || active.id === over.id) return;
 
-    const activeTask = allTasks.find(t => t.id === active.id);
-    const overTask   = allTasks.find(t => t.id === over.id);
+    const tasks      = useTaskStore.getState().tasks;
+    const activeTask = tasks.find(t => t.id === String(active.id));
+    const overTask   = tasks.find(t => t.id === String(over.id));
 
-    // Same-column reorder
     if (activeTask && overTask && activeTask.status === overTask.status) {
-      const col  = allTasks.filter(t => t.status === activeTask.status);
-      const from = col.findIndex(t => t.id === active.id);
-      const to   = col.findIndex(t => t.id === over.id);
+      const col  = tasks.filter(t => t.status === activeTask.status);
+      const from = col.findIndex(t => t.id === String(active.id));
+      const to   = col.findIndex(t => t.id === String(over.id));
       if (from !== -1 && to !== -1 && from !== to) {
         reorderInColumn(activeTask.status, from, to);
       }
@@ -71,18 +75,8 @@ export function BoardPage() {
     setEditingTask(null);
   }
 
-  function handleEdit(task: Task) {
-    setEditingTask(task);
-    setShowForm(true);
-  }
-
-  function handleDelete(task: Task) {
-    deleteTask(task.id);
-  }
-
   return (
     <div className={styles.page}>
-      {/* Header */}
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>Board</h1>
@@ -115,7 +109,6 @@ export function BoardPage() {
         </div>
       </div>
 
-      {/* Kanban board */}
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -129,14 +122,13 @@ export function BoardPage() {
               status={status}
               label={COLUMN_LABELS[status]}
               tasks={tasksByStatus[status]}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
+              onEdit={task => { setEditingTask(task); setShowForm(true); }}
+              onDelete={task => deleteTask(task.id)}
             />
           ))}
         </div>
       </DndContext>
 
-      {/* Add / Edit modal */}
       {showForm && (
         <TaskForm
           task={editingTask}

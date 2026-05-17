@@ -1,9 +1,98 @@
 @use 'variables' as v;
 
 .navbar {
-  // TODO: port from navbar.component.css
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  height: v.$navbar-height;
+  background: v.$color-bg;
+  border-bottom: 1px solid v.$color-border-subtle;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .brand {
-  // TODO
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.brandIcon {
+  color: v.$color-primary;
+  font-size: 1rem;
+}
+
+.brandName {
+  color: v.$color-text-heading;
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.links {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: 1;
+  margin-left: 1.5rem;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  color: v.$color-text-muted;
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background v.$transition-fast, color v.$transition-fast;
+
+  &:hover {
+    background: v.$color-surface;
+    color: v.$color-text;
+  }
+
+  &.active {
+    background: v.$color-surface;
+    color: v.$color-primary;
+  }
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.statChip {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.25rem 0.6rem;
+  background: v.$color-surface;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-pill;
+  font-size: 0.75rem;
+  color: v.$color-text-muted;
+  white-space: nowrap;
+
+  &.chipOverdue {
+    border-color: #7f1d1d;
+    background: #1c0a0a;
+    color: v.$priority-high-text;
+  }
+}
+
+.statDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+
+  &.dotDone    { background: v.$color-status-done; }
+  &.dotOverdue { background: v.$color-overdue; }
 }

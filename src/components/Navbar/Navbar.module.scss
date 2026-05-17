@@ -60,6 +60,25 @@
   }
 }
 
+// Angular-app links — slightly dimmer, icon fades in on hover
+.external {
+  opacity: 0.75;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.externalIcon {
+  opacity: 0;
+  transition: opacity v.$transition-fast;
+  flex-shrink: 0;
+}
+
+.external:hover .externalIcon {
+  opacity: 0.6;
+}
+
 .badge {
   background: v.$color-primary;
   color: white;

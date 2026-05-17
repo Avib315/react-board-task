@@ -39,12 +39,15 @@
 .searchInput {
   @include m.input-base;
   width: 200px;
+  // Board filters use the lighter surface (#1e293b), not the darker modal input (#0f172a)
+  background: v.$color-surface;
 }
 
 .filterSelect {
   @include m.input-base;
   width: auto;
   cursor: pointer;
+  background: v.$color-surface;
 }
 
 .btnAdd {

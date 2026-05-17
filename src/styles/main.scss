@@ -5,6 +5,16 @@
   box-sizing: border-box;
 }
 
+// Mirrors Tailwind preflight — makes buttons/inputs inherit body font (Inter)
+// so they don't fall back to the browser's default UI font
+button, input, select, textarea {
+  font: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  letter-spacing: inherit;
+  color: inherit;
+}
+
 html, body, #root {
   margin: 0;
   padding: 0;

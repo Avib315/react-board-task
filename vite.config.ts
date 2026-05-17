@@ -26,5 +26,12 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./src/test/setup.ts'],
     exclude: ['node_modules', 'tests/e2e/**'],
+    css: {
+      modules: {
+        // Use plain class names in tests so toHaveClass('done') works
+        // without needing to import and reference the CSS Module object
+        classNameStrategy: 'non-scoped',
+      },
+    },
   },
 })

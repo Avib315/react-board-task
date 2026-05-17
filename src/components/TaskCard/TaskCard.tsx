@@ -34,7 +34,8 @@ export function TaskCard({ task, onEdit, onDelete }: TaskCardProps) {
   const cardStyle = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity: isDragging ? 0.4 : 1,
+    // Only set opacity inline while dragging — otherwise let .done CSS class control it
+    opacity: isDragging ? 0.4 : undefined,
   };
 
   return (

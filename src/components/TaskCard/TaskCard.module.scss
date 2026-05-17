@@ -17,10 +17,11 @@
     .dragHandle { opacity: 1; }
     .actions    { opacity: 1; }
   }
-
-  &.done    { opacity: 0.6; }
-  &.overdue { border-left: 3px solid v.$color-overdue; }
 }
+
+// Top-level so CSS Modules exports them as standalone class names
+.done    { opacity: 0.6; }
+.overdue { border-left: 3px solid v.$color-overdue; }
 
 .dragHandle {
   position: absolute;
@@ -97,9 +98,9 @@
   font-size: 0.7rem;
   color: v.$color-text-faint;
   margin-left: auto;
-
-  &.dueDateOverdue { color: v.$color-overdue; }
 }
+
+.dueDateOverdue { color: v.$color-overdue; }
 
 .actions {
   display: flex;

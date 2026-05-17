@@ -1,36 +1,133 @@
 @use 'variables' as v;
+@use 'mixins' as m;
 
 .card {
-  // TODO: port from board.component.css .task-card
+  background: v.$color-surface;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-lg;
+  padding: 0.75rem;
+  cursor: grab;
+  position: relative;
+  transition: box-shadow v.$transition-fast, border-color v.$transition-fast;
+
+  &:hover {
+    border-color: v.$color-border-hover;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    .dragHandle { opacity: 1; }
+    .actions    { opacity: 1; }
+  }
+
+  &.done    { opacity: 0.6; }
+  &.overdue { border-left: 3px solid v.$color-overdue; }
 }
 
-.done {
-  opacity: 0.6;
+.dragHandle {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  color: v.$color-border-hover;
+  font-size: 1rem;
+  opacity: 0;
+  cursor: grab;
+  transition: opacity v.$transition-fast;
+  line-height: 1;
+  user-select: none;
 }
 
-.overdue {
-  border-left: 3px solid v.$color-overdue;
+.metaTop {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.4rem;
+  flex-wrap: wrap;
 }
 
 .priorityBadge {
-  // TODO
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 1px 6px;
+  border-radius: v.$radius-sm;
+  letter-spacing: 0.04em;
 }
 
-// Priority variants — Angular: .p-low, .p-medium, .p-high, .p-critical
-.p_low      { color: v.$priority-low-text;      background: v.$priority-low-bg; }
-.p_medium   { color: v.$priority-medium-text;   background: v.$priority-medium-bg; }
-.p_high     { color: v.$priority-high-text;     background: v.$priority-high-bg; }
-.p_critical { color: v.$priority-critical-text; background: v.$priority-critical-bg; }
+.p_low      { background: v.$priority-low-bg;      color: v.$priority-low-text; }
+.p_medium   { background: v.$priority-medium-bg;   color: v.$priority-medium-text; }
+.p_high     { background: v.$priority-high-bg;     color: v.$priority-high-text; }
+.p_critical { background: v.$priority-critical-bg; color: v.$priority-critical-text; }
 
 .projectTag {
-  border-left: 3px solid;
-  padding-left: 4px;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 1px 6px;
+  border-radius: v.$radius-sm;
+  border: 1px solid;
+  background: transparent;
 }
 
 .title {
-  // TODO
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: v.$color-text;
+  text-decoration: none;
+  line-height: 1.4;
+  margin-bottom: 0.5rem;
+
+  &:hover { color: #818cf8; }
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.assignee {
+  font-size: 0.7rem;
+  background: v.$color-bg;
+  color: v.$color-text-muted;
+  padding: 2px 7px;
+  border-radius: v.$radius-pill;
+  border: 1px solid v.$color-border;
+}
+
+.dueDate {
+  font-size: 0.7rem;
+  color: v.$color-text-faint;
+  margin-left: auto;
+
+  &.dueDateOverdue { color: v.$color-overdue; }
 }
 
 .actions {
-  // TODO: hidden until hover
+  display: flex;
+  gap: 0.25rem;
+  opacity: 0;
+  transition: opacity v.$transition-fast;
+}
+
+.iconBtn {
+  @include m.icon-btn;
+  &.danger:hover {
+    background: v.$color-danger-hover-bg;
+    color: v.$color-danger-hover-text;
+  }
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.4rem;
+}
+
+.tag {
+  font-size: 0.65rem;
+  background: v.$color-bg;
+  color: v.$color-text-faint;
+  padding: 1px 6px;
+  border-radius: v.$radius-sm;
+  border: 1px solid v.$color-border-subtle;
 }

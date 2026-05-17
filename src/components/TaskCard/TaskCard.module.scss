@@ -1,0 +1,36 @@
+@use 'variables' as v;
+
+.card {
+  // TODO: port from board.component.css .task-card
+}
+
+.done {
+  opacity: 0.6;
+}
+
+.overdue {
+  border-left: 3px solid v.$color-overdue;
+}
+
+.priorityBadge {
+  // TODO
+}
+
+// Priority variants — Angular: .p-low, .p-medium, .p-high, .p-critical
+.p_low      { color: v.$priority-low-text;      background: v.$priority-low-bg; }
+.p_medium   { color: v.$priority-medium-text;   background: v.$priority-medium-bg; }
+.p_high     { color: v.$priority-high-text;     background: v.$priority-high-bg; }
+.p_critical { color: v.$priority-critical-text; background: v.$priority-critical-bg; }
+
+.projectTag {
+  border-left: 3px solid;
+  padding-left: 4px;
+}
+
+.title {
+  // TODO
+}
+
+.actions {
+  // TODO: hidden until hover
+}

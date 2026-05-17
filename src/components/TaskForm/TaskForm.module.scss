@@ -1,0 +1,29 @@
+@use 'variables' as v;
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal {
+  background: v.$color-surface;
+  border-radius: 12px;
+  padding: 2rem;
+  width: min(560px, 90vw);
+  max-height: 90vh;
+  overflow-y: auto;
+  // TODO: port remaining styles from task-form.component.css
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}

@@ -10,7 +10,7 @@ import {
 import type { DragStartEvent, DragEndEvent, DragOverEvent } from '@dnd-kit/core';
 import type { Task, TaskStatus } from '../../models/task.model';
 import { COLUMN_ORDER, COLUMN_LABELS } from '../../models/task.model';
-import { useFilteredTasksByStatus, useTaskActions, useTaskStats, useTaskStore } from '../../hooks/useTaskStore';
+import { useFilteredTasksByStatus, useTaskActions, useTaskStore } from '../../hooks/useTaskStore';
 import { t, interp } from '../../i18n';
 import { KanbanColumn } from '../../components/KanbanColumn/KanbanColumn';
 import { TaskCardOverlay } from '../../components/TaskCard/TaskCard';
@@ -25,7 +25,8 @@ export function BoardPage() {
   const [activeTask, setActiveTask]         = useState<Task | null>(null);
 
   const tasksByStatus = useFilteredTasksByStatus(searchQuery, filterPriority);
-  const stats = useTaskStats();
+  // Mirror Angular's totalTaskCount() — count only the visible (filtered) tasks
+  const filteredTotal = Object.values(tasksByStatus).reduce((sum, tasks) => sum + tasks.length, 0);
   const { addTask, updateTask, deleteTask, moveTask, reorderInColumn } = useTaskActions();
 
   const sensors = useSensors(
@@ -92,7 +93,7 @@ export function BoardPage() {
       <div className={styles.header}>
         <div>
           <h1 className={styles.title}>{t.board.title}</h1>
-          <p className={styles.sub}>{interp(t.board.subtitle, { total: stats.total, columns: COLUMN_ORDER.length })}</p>
+          <p className={styles.sub}>{interp(t.board.subtitle, { total: filteredTotal, columns: COLUMN_ORDER.length })}</p>
         </div>
         <div className={styles.actions}>
           <input

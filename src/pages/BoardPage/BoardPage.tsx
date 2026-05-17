@@ -10,7 +10,7 @@ import {
 import type { DragStartEvent, DragEndEvent, DragOverEvent } from '@dnd-kit/core';
 import type { Task, TaskStatus } from '../../models/task.model';
 import { COLUMN_ORDER, COLUMN_LABELS } from '../../models/task.model';
-import { useFilteredTasksByStatus, useTaskActions, useTaskStore } from '../../hooks/useTaskStore';
+import { useFilteredTasksByStatus, useTaskActions, useTaskStats, useTaskStore } from '../../hooks/useTaskStore';
 import { KanbanColumn } from '../../components/KanbanColumn/KanbanColumn';
 import { TaskCardOverlay } from '../../components/TaskCard/TaskCard';
 import { TaskForm } from '../../components/TaskForm/TaskForm';
@@ -24,6 +24,7 @@ export function BoardPage() {
   const [activeTask, setActiveTask]         = useState<Task | null>(null);
 
   const tasksByStatus = useFilteredTasksByStatus(searchQuery, filterPriority);
+  const stats = useTaskStats();
   const { addTask, updateTask, deleteTask, moveTask, reorderInColumn } = useTaskActions();
 
   const sensors = useSensors(
@@ -89,8 +90,8 @@ export function BoardPage() {
     <div className={styles.page}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Board</h1>
-          <p className={styles.sub}>Drag cards between columns to update status</p>
+          <h1 className={styles.title}> Kanban Board </h1>
+          <p className={styles.sub}>{stats.total} tasks across {COLUMN_ORDER.length} columns</p>
         </div>
         <div className={styles.actions}>
           <input

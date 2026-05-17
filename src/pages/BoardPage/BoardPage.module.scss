@@ -36,18 +36,25 @@
   gap: 0.5rem;
 }
 
+// Board filters match Angular's .search-input / .filter-select exactly:
+// padding: 0.4rem (not 0.5rem from mixin), font-size and color locked explicitly
 .searchInput {
   @include m.input-base;
+  padding: 0.4rem 0.75rem;
   width: 200px;
-  // Board filters use the lighter surface (#1e293b), not the darker modal input (#0f172a)
   background: v.$color-surface;
+  font-size: 0.875rem;
+  color: v.$color-text;
 }
 
 .filterSelect {
   @include m.input-base;
+  padding: 0.4rem 0.75rem;
   width: auto;
   cursor: pointer;
   background: v.$color-surface;
+  font-size: 0.875rem;
+  color: v.$color-text;
 }
 
 .btnAdd {

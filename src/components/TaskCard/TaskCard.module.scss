@@ -28,7 +28,8 @@
 // While dragging: card becomes invisible — DragOverlay shows the floating copy
 .dragging {
   opacity: 0;
-  transition: none;  // no transform transition on the ghost
+  cursor: grabbing;
+  transition: none;
 }
 
 // Floating copy rendered in DragOverlay (mirrors Angular .cdk-drag-preview)

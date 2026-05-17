@@ -23,8 +23,21 @@ html, body, #root {
   color: v.$color-text;
   font-family: v.$font-family;
   font-size: 16px;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+// Mirrors Tailwind preflight — reset browser default margins on block elements
+h1, h2, h3, h4, h5, h6, p, ul, ol, li, figure, blockquote {
+  margin: 0;
+  padding: 0;
+}
+
+// Mirrors Tailwind preflight — make SVG/img block-level so they don't add line-height gap
+img, svg {
+  display: block;
+  max-width: 100%;
 }
 
 ::-webkit-scrollbar        { width: 6px; height: 6px; }

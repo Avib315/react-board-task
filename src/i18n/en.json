@@ -1,0 +1,68 @@
+{
+  "nav": {
+    "brand": "ProjectHub",
+    "dashboard": "Dashboard",
+    "board": "Board",
+    "tasks": "Tasks",
+    "externalTooltip": "Opens in Angular app (localhost:4200)"
+  },
+  "board": {
+    "title": "Kanban Board",
+    "subtitle": "{total} tasks across {columns} columns",
+    "searchPlaceholder": "Search tasks…",
+    "addTask": "+ Add Task"
+  },
+  "priority": {
+    "all": "All priorities",
+    "critical": "Critical",
+    "high": "High",
+    "medium": "Medium",
+    "low": "Low"
+  },
+  "status": {
+    "todo": "To Do",
+    "inProgress": "In Progress",
+    "review": "Review",
+    "done": "Done"
+  },
+  "column": {
+    "empty": "Drop tasks here"
+  },
+  "taskCard": {
+    "edit": "Edit",
+    "delete": "Delete"
+  },
+  "taskForm": {
+    "addHeading": "Add Task",
+    "editHeading": "Edit Task",
+    "cancel": "Cancel",
+    "saveChanges": "Save changes",
+    "addTaskBtn": "Add task",
+    "fields": {
+      "title": "Title",
+      "description": "Description",
+      "status": "Status",
+      "priority": "Priority",
+      "assignee": "Assignee",
+      "project": "Project",
+      "dueDate": "Due Date",
+      "tags": "Tags"
+    },
+    "placeholders": {
+      "title": "Task title",
+      "description": "Optional description",
+      "tags": "bug, feature, ux"
+    },
+    "hints": {
+      "optional": "optional",
+      "commaSeparated": "comma-separated"
+    },
+    "validation": {
+      "titleRequired": "Title is required",
+      "titleMin": "At least 3 characters",
+      "titleMax": "Max 120 characters",
+      "titleNoWhitespace": "Cannot be blank or whitespace only",
+      "descriptionMax": "Max 500 characters"
+    }
+  }
+}

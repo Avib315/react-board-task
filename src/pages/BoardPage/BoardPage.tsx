@@ -11,6 +11,7 @@ import type { DragStartEvent, DragEndEvent, DragOverEvent } from '@dnd-kit/core'
 import type { Task, TaskStatus } from '../../models/task.model';
 import { COLUMN_ORDER, COLUMN_LABELS } from '../../models/task.model';
 import { useFilteredTasksByStatus, useTaskActions, useTaskStats, useTaskStore } from '../../hooks/useTaskStore';
+import { t, interp } from '../../i18n';
 import { KanbanColumn } from '../../components/KanbanColumn/KanbanColumn';
 import { TaskCardOverlay } from '../../components/TaskCard/TaskCard';
 import { TaskForm } from '../../components/TaskForm/TaskForm';
@@ -90,13 +91,13 @@ export function BoardPage() {
     <div className={styles.page}>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}> Kanban Board </h1>
-          <p className={styles.sub}>{stats.total} tasks across {COLUMN_ORDER.length} columns</p>
+          <h1 className={styles.title}>{t.board.title}</h1>
+          <p className={styles.sub}>{interp(t.board.subtitle, { total: stats.total, columns: COLUMN_ORDER.length })}</p>
         </div>
         <div className={styles.actions}>
           <input
             className={styles.searchInput}
-            placeholder="Search tasks…"
+            placeholder={t.board.searchPlaceholder}
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
           />
@@ -105,17 +106,17 @@ export function BoardPage() {
             value={filterPriority}
             onChange={e => setFilterPriority(e.target.value)}
           >
-            <option value="">All priorities</option>
-            <option value="critical">Critical</option>
-            <option value="high">High</option>
-            <option value="medium">Medium</option>
-            <option value="low">Low</option>
+            <option value="">{t.priority.all}</option>
+            <option value="critical">{t.priority.critical}</option>
+            <option value="high">{t.priority.high}</option>
+            <option value="medium">{t.priority.medium}</option>
+            <option value="low">{t.priority.low}</option>
           </select>
           <button
             className={styles.btnAdd}
             onClick={() => { setEditingTask(null); setShowForm(true); }}
           >
-            + Add Task
+            {t.board.addTask}
           </button>
         </div>
       </div>

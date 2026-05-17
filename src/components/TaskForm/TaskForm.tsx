@@ -3,6 +3,7 @@ import { useForm } from 'react-hook-form';
 import clsx from 'clsx';
 import type { Task, TaskStatus, TaskPriority } from '../../models/task.model';
 import { ASSIGNEES, PROJECTS } from '../../models/task.model';
+import { t } from '../../i18n';
 import styles from './TaskForm.module.scss';
 
 interface TaskFormProps {
@@ -22,9 +23,8 @@ interface FormValues {
   tags: string;
 }
 
-// Mirrors Angular noWhitespaceValidator
 function noWhitespace(value: string) {
-  return value.trim().length > 0 || 'Cannot be blank or whitespace only';
+  return value.trim().length > 0 || t.taskForm.validation.titleNoWhitespace;
 }
 
 export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
@@ -46,7 +46,6 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
     },
   });
 
-  // Reset form when task prop changes (switching between add and edit)
   useEffect(() => {
     reset({
       title:       task?.title       ?? '',
@@ -69,14 +68,10 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
       assignee:    values.assignee,
       projectId:   values.projectId,
       dueDate:     values.dueDate ? new Date(values.dueDate) : null,
-      tags:        values.tags
-        .split(',')
-        .map(t => t.trim())
-        .filter(Boolean),
+      tags:        values.tags.split(',').map(v => v.trim()).filter(Boolean),
     });
   }
 
-  // Close on Escape key
   useEffect(() => {
     const handler = (e: KeyboardEvent) => { if (e.key === 'Escape') onCancel(); };
     window.addEventListener('keydown', handler);
@@ -88,7 +83,9 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
       <div className={styles.modal} onClick={e => e.stopPropagation()}>
 
         <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>{task ? 'Edit Task' : 'Add Task'}</h2>
+          <h2 className={styles.modalTitle}>
+            {task ? t.taskForm.editHeading : t.taskForm.addHeading}
+          </h2>
           <button className={styles.closeBtn} type="button" onClick={onCancel}>✕</button>
         </div>
 
@@ -98,16 +95,16 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
             {/* Title */}
             <div className={clsx(styles.field, errors.title && styles.fieldError)}>
               <label className={styles.label}>
-                Title <span className={styles.required}>*</span>
+                {t.taskForm.fields.title} <span className={styles.required}>*</span>
               </label>
               <input
                 className={styles.input}
-                placeholder="Task title"
+                placeholder={t.taskForm.placeholders.title}
                 {...register('title', {
-                  required: 'Title is required',
-                  minLength: { value: 3, message: 'At least 3 characters' },
-                  maxLength: { value: 120, message: 'Max 120 characters' },
-                  validate: noWhitespace,
+                  required:  t.taskForm.validation.titleRequired,
+                  minLength: { value: 3,   message: t.taskForm.validation.titleMin },
+                  maxLength: { value: 120, message: t.taskForm.validation.titleMax },
+                  validate:  noWhitespace,
                 })}
               />
               {errors.title && <p className={styles.errorMsg}>{errors.title.message}</p>}
@@ -115,12 +112,12 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
 
             {/* Description */}
             <div className={clsx(styles.field, errors.description && styles.fieldError)}>
-              <label className={styles.label}>Description</label>
+              <label className={styles.label}>{t.taskForm.fields.description}</label>
               <textarea
                 className={clsx(styles.input, styles.textarea)}
-                placeholder="Optional description"
+                placeholder={t.taskForm.placeholders.description}
                 {...register('description', {
-                  maxLength: { value: 500, message: 'Max 500 characters' },
+                  maxLength: { value: 500, message: t.taskForm.validation.descriptionMax },
                 })}
               />
               {errors.description && <p className={styles.errorMsg}>{errors.description.message}</p>}
@@ -129,21 +126,21 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
             {/* Status + Priority */}
             <div className={styles.fieldRow}>
               <div className={styles.field}>
-                <label className={styles.label}>Status</label>
+                <label className={styles.label}>{t.taskForm.fields.status}</label>
                 <select className={styles.input} {...register('status')}>
-                  <option value="todo">To Do</option>
-                  <option value="in-progress">In Progress</option>
-                  <option value="review">Review</option>
-                  <option value="done">Done</option>
+                  <option value="todo">{t.status.todo}</option>
+                  <option value="in-progress">{t.status.inProgress}</option>
+                  <option value="review">{t.status.review}</option>
+                  <option value="done">{t.status.done}</option>
                 </select>
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>Priority</label>
+                <label className={styles.label}>{t.taskForm.fields.priority}</label>
                 <select className={styles.input} {...register('priority')}>
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                  <option value="critical">Critical</option>
+                  <option value="low">{t.priority.low}</option>
+                  <option value="medium">{t.priority.medium}</option>
+                  <option value="high">{t.priority.high}</option>
+                  <option value="critical">{t.priority.critical}</option>
                 </select>
               </div>
             </div>
@@ -151,13 +148,13 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
             {/* Assignee + Project */}
             <div className={styles.fieldRow}>
               <div className={styles.field}>
-                <label className={styles.label}>Assignee</label>
+                <label className={styles.label}>{t.taskForm.fields.assignee}</label>
                 <select className={styles.input} {...register('assignee')}>
                   {ASSIGNEES.map(a => <option key={a} value={a}>{a}</option>)}
                 </select>
               </div>
               <div className={styles.field}>
-                <label className={styles.label}>Project</label>
+                <label className={styles.label}>{t.taskForm.fields.project}</label>
                 <select className={styles.input} {...register('projectId')}>
                   {PROJECTS.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                 </select>
@@ -167,7 +164,8 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
             {/* Due date */}
             <div className={styles.field}>
               <label className={styles.label}>
-                Due Date <span className={styles.hint}>(optional)</span>
+                {t.taskForm.fields.dueDate}{' '}
+                <span className={styles.hint}>({t.taskForm.hints.optional})</span>
               </label>
               <input type="date" className={styles.input} {...register('dueDate')} />
             </div>
@@ -175,11 +173,12 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
             {/* Tags */}
             <div className={styles.field}>
               <label className={styles.label}>
-                Tags <span className={styles.hint}>(comma-separated)</span>
+                {t.taskForm.fields.tags}{' '}
+                <span className={styles.hint}>({t.taskForm.hints.commaSeparated})</span>
               </label>
               <input
                 className={styles.input}
-                placeholder="bug, feature, ux"
+                placeholder={t.taskForm.placeholders.tags}
                 {...register('tags')}
               />
             </div>
@@ -188,10 +187,10 @@ export function TaskForm({ task, onSave, onCancel }: TaskFormProps) {
 
           <div className={styles.modalFooter}>
             <button type="button" className={styles.btnCancel} onClick={onCancel}>
-              Cancel
+              {t.taskForm.cancel}
             </button>
             <button type="submit" className={styles.btnSubmit} disabled={isSubmitting}>
-              {task ? 'Save changes' : 'Add task'}
+              {task ? t.taskForm.saveChanges : t.taskForm.addTaskBtn}
             </button>
           </div>
         </form>

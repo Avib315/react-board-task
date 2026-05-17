@@ -5,6 +5,7 @@ import clsx from 'clsx';
 import type { Task } from '../../models/task.model';
 import { PROJECTS } from '../../models/task.model';
 import { useTimeAgo } from '../../hooks/useTimeAgo';
+import { t } from '../../i18n';
 import styles from './TaskCard.module.scss';
 
 interface TaskCardProps {
@@ -53,8 +54,8 @@ function TaskCardInner({ task, onEdit, onDelete }: TaskCardProps) {
         <span className={styles.assignee}>{task.assignee}</span>
         {task.dueDate && <DueDate date={task.dueDate} isDone={isDone} />}
         <div className={styles.actions}>
-          <button className={styles.iconBtn}  onClick={() => onEdit(task)}   title="Edit">✎</button>
-          <button className={clsx(styles.iconBtn, styles.danger)} onClick={() => onDelete(task)} title="Delete">✕</button>
+          <button className={styles.iconBtn}  onClick={() => onEdit(task)}   title={t.taskCard.edit}>✎</button>
+          <button className={clsx(styles.iconBtn, styles.danger)} onClick={() => onDelete(task)} title={t.taskCard.delete}>✕</button>
         </div>
       </div>
 

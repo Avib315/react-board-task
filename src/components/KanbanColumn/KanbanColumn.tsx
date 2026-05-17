@@ -3,6 +3,7 @@ import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import clsx from 'clsx';
 import type { Task, TaskStatus } from '../../models/task.model';
 import { TaskCard } from '../TaskCard/TaskCard';
+import { t } from '../../i18n';
 import styles from './KanbanColumn.module.scss';
 
 interface KanbanColumnProps {
@@ -41,7 +42,7 @@ export function KanbanColumn({ status, label, tasks, onEdit, onDelete }: KanbanC
         </SortableContext>
 
         {tasks.length === 0 && (
-          <p className={styles.empty}>Drop tasks here</p>
+          <p className={styles.empty}>{t.column.empty}</p>
         )}
       </div>
     </div>

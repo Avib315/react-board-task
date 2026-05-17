@@ -1,0 +1,38 @@
+@use 'variables' as v;
+@use 'mixins' as m;
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: v.$color-bg;
+  color: v.$color-text;
+  font-family: v.$font-family;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::-webkit-scrollbar        { width: 6px; height: 6px; }
+::-webkit-scrollbar-track  { background: v.$color-bg; }
+::-webkit-scrollbar-thumb  { background: v.$color-border; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: v.$color-border-hover; }
+
+// Search highlight — mirrors Angular mark.highlight
+mark.highlight {
+  background: v.$color-highlight-bg;
+  color: v.$color-highlight-text;
+  border-radius: 2px;
+  padding: 0 1px;
+}
+
+// dnd-kit drag preview global — mirrors Angular .cdk-drag-preview
+[data-dragging='true'] {
+  box-sizing: border-box;
+  border-radius: v.$radius-lg;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}

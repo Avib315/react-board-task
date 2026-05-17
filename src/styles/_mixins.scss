@@ -1,0 +1,47 @@
+@use 'variables' as v;
+
+@mixin input-base {
+  padding: 0.5rem 0.75rem;
+  background: v.$color-surface-2;
+  border: 1px solid v.$color-border;
+  border-radius: v.$radius-md;
+  color: v.$color-text;
+  font-size: 0.875rem;
+  font-family: inherit;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color v.$transition-fast;
+
+  &:focus {
+    border-color: v.$color-primary;
+  }
+}
+
+@mixin icon-btn {
+  background: none;
+  border: none;
+  color: v.$color-text-faint;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: v.$radius-sm;
+  font-size: 0.75rem;
+  transition: color v.$transition-fast, background v.$transition-fast;
+
+  &:hover {
+    background: v.$color-border;
+    color: v.$color-text;
+  }
+
+  &.danger:hover {
+    background: v.$color-danger-hover-bg;
+    color: v.$color-danger-hover-text;
+  }
+}
+
+@mixin scrollbar {
+  &::-webkit-scrollbar        { width: 6px; height: 6px; }
+  &::-webkit-scrollbar-track  { background: v.$color-bg; }
+  &::-webkit-scrollbar-thumb  { background: v.$color-border; border-radius: 3px; }
+  &::-webkit-scrollbar-thumb:hover { background: v.$color-border-hover; }
+}

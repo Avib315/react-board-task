@@ -1,11 +1,6 @@
-// Angular equivalent: ActivityService (BehaviorSubject + interval(4000) + combineLatest)
-// React equivalent:   Zustand store; auto-push via useEffect + setInterval in a hook
-
 import { create } from 'zustand';
 import type { ActivityEvent } from '../models/task.model';
 import { ASSIGNEES } from '../models/task.model';
-
-// TODO: implement store
 
 const EVENT_TEMPLATES: Array<{ type: ActivityEvent['type']; detail: (t: string) => string }> = [
   { type: 'created',   detail: t => `created task "${t}"` },
@@ -29,6 +24,23 @@ function randomFrom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+function generateInitialFeed(): ActivityEvent[] {
+  const now = new Date();
+  return Array.from({ length: 10 }, (_, i) => {
+    const template = randomFrom(EVENT_TEMPLATES);
+    const title = randomFrom(SAMPLE_TITLES);
+    return {
+      id: generateId(),
+      type: template.type,
+      taskId: generateId(),
+      taskTitle: title,
+      actor: randomFrom(ASSIGNEES),
+      detail: template.detail(title),
+      timestamp: new Date(now.getTime() - i * 3 * 60 * 1000),
+    };
+  });
+}
+
 export interface ActivityState {
   feed: ActivityEvent[];
   filterQuery: string;
@@ -38,8 +50,7 @@ export interface ActivityState {
 }
 
 export const useActivityStore = create<ActivityState>()((set, get) => ({
-  feed: [], // TODO: generateInitialFeed() on creation
-
+  feed: generateInitialFeed(),
   filterQuery: '',
 
   setFilter: (query) => set({ filterQuery: query }),
@@ -62,7 +73,6 @@ export const useActivityStore = create<ActivityState>()((set, get) => ({
   },
 }));
 
-// Selector: mirrors ActivityService.filteredFeed$ (combineLatest + filter + slice)
 export function selectFilteredFeed(feed: ActivityEvent[], query: string): ActivityEvent[] {
   if (!query.trim()) return feed.slice(0, 20);
   const q = query.toLowerCase();
